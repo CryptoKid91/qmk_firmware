@@ -155,8 +155,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_LCTRL("t"));
       wait_ms(100);
       SEND_STRING("www.io/tech.fi");
+<<<<<<< HEAD
       _delay_ms(100);
       SEND_STRING(SS_TAP(X_ENTER));
+=======
+      wait_ms(100);
+      tap_code(KC_ENT);
+>>>>>>> 8a4700732e (Update keyboards/xd75/keymaps/cryptokid91/keymap.c)
     }
     return false;
   case TERM:
