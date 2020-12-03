@@ -29,7 +29,8 @@ enum planck_layers {
 enum planck_keycodes {
   NEWTAB = SAFE_RANGE,
   IOTECH,
-	TERM
+	TERM,
+	ALTESC
 };
 
 #define MS_FN LT(_FUNCTION, KC_APP)
@@ -51,7 +52,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_planck_grid(
-    KC_ESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC,
+    ALTESC,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC,
     KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  MS_US, KC_SLSH,
     MS_FN,   KC_NUBS, KC_LGUI, KC_LALT, MS_BSPC, KC_SPC,  KC_ENT,  MS_DEL,  KC_RALT, KC_LEFT, KC_DOWN, KC_RGHT
@@ -96,20 +97,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Function
  * ,-----------------------------------------------------------------------------------.
- * | Tab  |      |      |      |      | Term |      |      |  Up  |      |      |      |
+ * | Tab  |      |      |      |      | Term |      |      |  Up  |      |PrtScr|  ¨   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      | Home | Left | Down | Right|      |      |
+ * |      |      |ScrLck|      |      |      | Home | Left | Down | Right|      |  '   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      | End  |IOTech|      |      |Vol Up| Play |
+ * |      |      | Mute |Vol Dn|Vol Up|      | End  |IOTech|      |      |      |  ´   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |Newtab|      |      |      | Prev |Vol Dn| Next |
+ * |      |      |      |      |      |Newtab|      |      |      | Prev | Play | Next |
  * `-----------------------------------------------------------------------------------'
  */
 [_FUNCTION] = LAYOUT_planck_grid(
-    KC_TAB,  _______, _______, _______, _______, TERM,    _______, _______, KC_UP,   _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT, _______, _______,
-    _______, _______, _______, _______, _______, _______, KC_END,  IOTECH,  _______, _______, KC_VOLU, KC_MPLY,
-    _______, _______, _______, _______, _______, NEWTAB,  _______, _______, _______, KC_MPRV, KC_VOLD, KC_MNXT
+    KC_TAB,  _______, _______, _______, _______, TERM,    _______, _______, KC_UP,   _______, KC_PSCR, KC_RBRC,
+    _______, _______, KC_SLCK, _______, _______, _______, KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT, _______, KC_BSLS,
+    _______, _______, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_END,  IOTECH,  _______, _______, _______, KC_EQL,
+    _______, _______, _______, _______, _______, NEWTAB,  _______, _______, _______, KC_MPRV, KC_MPLY, KC_MNXT
 ),
 
 /* Adjust (Lower + Raise)
@@ -166,6 +167,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_TAP(X_ENTER));
     }
     return false;
+	case ALTESC: {
+      static uint8_t kc;
+      if (record->event.pressed) {
+        if (get_mods() & MOD_MASK_ALT) {
+          kc = KC_TAB;
+        } else {
+          kc = KC_ESC;
+        }
+        register_code(kc);
+      } else {
+        unregister_code(kc);
+      }
+    return false;
+	}
   default:
     return true;
   }
@@ -196,15 +211,4 @@ void matrix_scan_user(void) {
         }
     }
 #endif
-}
-
-bool music_mask_user(uint16_t keycode) {
-  switch (keycode) {
-    case NEWTAB:
-		case IOTECH:
-		case TERM:
-      return false;
-    default:
-      return true;
-  }
 }

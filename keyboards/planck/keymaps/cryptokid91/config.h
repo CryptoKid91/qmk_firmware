@@ -34,6 +34,9 @@
 /* override number of MIDI tone keycodes (each octave adds 12 keycodes and allocates 12 bytes) */
 //#define MIDI_TONE_KEYCODE_OCTAVES 2
 
+// Virtuaaliset näppäinäänet
+#define AUDIO_CLICKY
+
 // Most tactile encoders have detents every 4 stages
 #define ENCODER_RESOLUTION 4
 
