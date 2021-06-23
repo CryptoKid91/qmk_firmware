@@ -74,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |        |        |        |        |        | NEWTAB |ROLL100 |        |        |        |        |        |        |        |        |
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
- 
+
  [_LOWER] = LAYOUT_ortho_5x15( /* LOWERED */
    KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F11,  _______, KC_F12,  KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_EQL,
    _______, KC_MPRV, KC_MNXT, KC_VOLU, _______, _______, RGB_TOG, _______, KC_PSCR, _______, KC_PGDN, KC_UP,   KC_PGUP, _______, KC_RBRC,
@@ -96,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |        |        |        |        |        |        |        | DMRSTP |        |        |        |        |        |        |        |
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
- 
+
  [_RAISE] = LAYOUT_ortho_5x15( /* RAISED */
    S(KC_GRV), KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F11,  _______, KC_F12,  KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  S(KC_EQL),
    _______,   KC_MPRV, KC_MNXT, KC_VOLU, _______, TERM,    RGB_TOG, _______, KC_PSCR, _______, KC_PGDN, KC_UP,   KC_PGUP, _______, S(KC_RBRC),
@@ -118,7 +118,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
  * '--------------------------------------------------------------------------------------------------------------------------------------'
  */
- 
+
  [_RESET] = LAYOUT_ortho_5x15( /* RESET */
    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
@@ -139,7 +139,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case NEWTAB:
     if(record->event.pressed) {
       SEND_STRING(SS_LCTRL("c") SS_LCTRL("t"));
-      wait_ms(100);
+      wait_ms(200);
       SEND_STRING(SS_LCTRL("v"));
       wait_ms(100);
       SEND_STRING(SS_TAP(X_ENTER));
