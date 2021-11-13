@@ -1,0 +1,9 @@
+#pragma once
+
+#define GRAVE_ESC_CTRL_OVERRIDE
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
+#define USB_POLLING_INTERVAL_MS 10
+#define FORCE_NKRO
+
+#undef BACKLIGHT_BREATHING
