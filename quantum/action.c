@@ -359,9 +359,9 @@ void process_action(keyrecord_t *record, action_t action) {
                 }
             }
         } break;
-#ifndef NO_ACTION_TAPPING
         case ACT_LMODS_TAP:
         case ACT_RMODS_TAP: {
+#ifndef NO_ACTION_TAPPING
             uint8_t mods = (action.kind.id == ACT_LMODS_TAP) ? action.key.mods : action.key.mods << 4;
             switch (action.layer_tap.code) {
 #    ifndef NO_ACTION_ONESHOT
@@ -483,8 +483,8 @@ void process_action(keyrecord_t *record, action_t action) {
                     }
                     break;
             }
-        } break;
 #endif
+        } break;
 #ifdef EXTRAKEY_ENABLE
         /* other HID usage */
         case ACT_USAGE:
@@ -505,7 +505,7 @@ void process_action(keyrecord_t *record, action_t action) {
                     break;
             }
             break;
-#endif
+#endif // EXTRAKEY_ENABLE
 #ifdef MOUSEKEY_ENABLE
         /* Mouse key */
         case ACT_MOUSEKEY:
@@ -529,7 +529,7 @@ void process_action(keyrecord_t *record, action_t action) {
                     break;
             }
             break;
-#endif
+#endif // MOUSEKEY_ENABLE
 #ifndef NO_ACTION_LAYER
         case ACT_LAYER:
             if (action.layer_bitop.on == 0) {
@@ -585,10 +585,10 @@ void process_action(keyrecord_t *record, action_t action) {
                 layer_off(action.layer_mods.layer);
             }
             break;
-#    ifndef NO_ACTION_TAPPING
         case ACT_LAYER_TAP:
         case ACT_LAYER_TAP_EXT:
             switch (action.layer_tap.code) {
+#    ifndef NO_ACTION_TAPPING
                 case OP_TAP_TOGGLE:
                     /* tap toggle */
                     if (event.pressed) {
@@ -601,6 +601,7 @@ void process_action(keyrecord_t *record, action_t action) {
                         }
                     }
                     break;
+#    endif
                 case OP_ON_OFF:
                     event.pressed ? layer_on(action.layer_tap.val) : layer_off(action.layer_tap.val);
                     break;
@@ -610,7 +611,7 @@ void process_action(keyrecord_t *record, action_t action) {
                 case OP_SET_CLEAR:
                     event.pressed ? layer_move(action.layer_tap.val) : layer_clear();
                     break;
-#        ifndef NO_ACTION_ONESHOT
+#    if !defined(NO_ACTION_ONESHOT) && !defined(NO_ACTION_TAPPING)
                 case OP_ONESHOT:
                     // Oneshot modifier
                     if (!keymap_config.oneshot_enable) {
@@ -620,7 +621,7 @@ void process_action(keyrecord_t *record, action_t action) {
                             layer_off(action.layer_tap.val);
                         }
                     } else {
-#            if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
+#        if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
                         do_release_oneshot = false;
                         if (event.pressed) {
                             if (get_oneshot_layer_state() == ONESHOT_TOGGLED) {
@@ -639,7 +640,7 @@ void process_action(keyrecord_t *record, action_t action) {
                                 clear_oneshot_layer_state(ONESHOT_PRESSED);
                             }
                         }
-#            else
+#        else
                         if (event.pressed) {
                             layer_on(action.layer_tap.val);
                             set_oneshot_layer(action.layer_tap.val, ONESHOT_START);
@@ -649,12 +650,18 @@ void process_action(keyrecord_t *record, action_t action) {
                                 clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
                             }
                         }
-#            endif
-                    }
-                    break;
 #        endif
+                    }
+#    else  // NO_ACTION_ONESHOT && NO_ACTION_TAPPING
+                    if (event.pressed) {
+                        layer_on(action.layer_tap.val);
+                    } else {
+                        layer_off(action.layer_tap.val);
+                    }
+#    endif // !defined(NO_ACTION_ONESHOT) && !defined(NO_ACTION_TAPPING)
+                    break;
                 default:
-                    /* tap key */
+#    ifndef NO_ACTION_TAPPING /* tap key */
                     if (event.pressed) {
                         if (tap_count > 0) {
                             dprint("KEYMAP_TAP_KEY: Tap: register_code\n");
@@ -677,11 +684,24 @@ void process_action(keyrecord_t *record, action_t action) {
                             layer_off(action.layer_tap.val);
                         }
                     }
+#    else
+                    if (event.pressed) {
+                        dprint("KEYMAP_TAP_KEY: Tap: register_code\n");
+                        register_code(action.layer_tap.code);
+                    } else {
+                        dprint("KEYMAP_TAP_KEY: Tap: unregister_code\n");
+                        if (action.layer_tap.code == KC_CAPS) {
+                            wait_ms(TAP_HOLD_CAPS_DELAY);
+                        } else {
+                            wait_ms(TAP_CODE_DELAY);
+                        }
+                        unregister_code(action.layer_tap.code);
+                    }
+#    endif
                     break;
             }
             break;
-#    endif
-#endif
+#endif // NO_ACTION_LAYER
 
 #ifdef SWAP_HANDS_ENABLE
         case ACT_SWAP_HANDS:
