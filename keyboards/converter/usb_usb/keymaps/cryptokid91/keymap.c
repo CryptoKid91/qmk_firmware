@@ -96,6 +96,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 set_single_persistent_default_layer(1);
               }
               return false; */
-            (I definitely did not copy my keymap to wrong place last time) default : return true;
+        default:
+            return true;
     }
 }
