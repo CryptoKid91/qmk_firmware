@@ -1,2 +1,1 @@
 KEY_LOCK_ENABLE = yes
-EXTRAFLAGS += -flto
