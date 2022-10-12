@@ -6,6 +6,8 @@
 #define MS_RC MT(MOD_RCTL, KC_RIGHT)
 #define MS_US MT(MOD_RSFT, KC_UP)
 
+static uint32_t key_timer = 0;
+static bool key_trigger = false;
 
 // enable dynamic macro recording
 /*enum root_keycodes {
@@ -21,6 +23,7 @@ enum {
 
 enum custom_keycodes {
   NEWTAB = SAFE_RANGE,
+  KEY_TMR
 };
 
 //#include "dynamic_macro.h"
@@ -71,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐    │
  * │      │   │   │   │   │   │   │TO2│   │   │Ins│Del│NuL│    │
  * ├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴┬───┤
- * │LSFT│   │   │   │MPl│MSt│MPv│MNx│Mut│Vo-│Vo+│   │RShift│   │
+ * │LSFT│TMR│   │   │MPl│MSt│MPv│MNx│Mut│Vo-│Vo+│   │RShift│   │
  * ├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴──┬┴──┬┴──┬───┼───┤
  * │Ctrl│Win │Alt │          Ctrl          │AGr│Hom│PgD│PgU│End│
  * └────┴────┴────┴────────────────────────┴───┴───┴───┴───┴───┘
@@ -81,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_DEL,
     _______, _______, _______, _______, RESET,   _______, _______, KC_PGDN, KC_UP,   KC_PGUP, KC_PSCR, KC_SLCK, KC_PAUS,
     _______, _______, _______, _______, RGB_TOG, _______, KC_HOME, KC_LEFT, KC_DOWN, KC_RIGHT, KC_INS, KC_DEL,  KC_NLCK, _______,
-    _______, _______, _______, _______, KC_MPLY, KC_MSTP, KC_MPRV, KC_END,  KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_RSFT, _______,
+    _______, KEY_TMR, _______, _______, KC_MPLY, KC_MSTP, KC_MPRV, KC_END,  KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_RSFT, _______,
     _______, _______, _______,                            NEWTAB,                    _______, KC_HOME, XXXXXXX, KC_PGUP, KC_A
   ),
 
@@ -146,7 +149,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       SEND_STRING(SS_TAP(X_ENTER));
     }
     return false;
+  case KEY_TMR:
+        if (record->event.pressed) {
+            key_trigger ^= true;
+        }
+    return false;
   default:
     return true;
   }
 };
+
+void matrix_scan_user(void) {
+    if (timer_elapsed32(key_timer) > 1500) { // 1.5 seconds
+        key_timer = timer_read32();  // resets timer
+        if (key_trigger) tap_code(KC_SPC); // tap if enabled
+    }
+}
