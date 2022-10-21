@@ -5,22 +5,26 @@
 #define _NUMPAD 2
 #define _MENU 3
 
+static uint32_t key_timer = 0;
+static bool key_trigger = false;
+
 enum custom_keycodes {
   NEWTAB = SAFE_RANGE,
-  MURO
+  MURO,
+  KEY_TMR
 };
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_NAV] = LAYOUT_ortho_4x4(
 		NEWTAB, MURO, KC_NO, OSL(_MENU),   \
-		KC_NO, KC_NO, KC_NO, KC_NO, \
+		KEY_TMR, KC_NO, KC_NO, KC_NO, \
 		KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, \
 		G(KC_LEFT), G(KC_RIGHT), S(G(KC_LEFT)), S(G(KC_RIGHT)) \
 	),
 	[_MACRO] = LAYOUT_ortho_4x4(
 		RESET,   BL_STEP, _______, OSL(_MENU), \
-		BL_TOGG, BL_DEC,  BL_INC,  KC_VOLD, \
+		BL_TOGG, RGB_VAI, RGB_VAD,  KC_VOLD, \
 		RGB_TOG, RGB_MOD, RGB_HUI, KC_MUTE, \
 		RGB_SAI, RGB_SAD, RGB_HUD, _______  \
 	),
@@ -91,7 +95,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     } else {
     }
     return false;
+  case KEY_TMR:
+    if (record->event.pressed) {
+        key_trigger ^= true;
+    }
+    return false;
   default:
     return true;
   }
+}
+
+void matrix_scan_user(void) {
+    if (timer_elapsed32(key_timer) > 1345) { // 1.34 seconds
+        key_timer = timer_read32();  // resets timer
+        if (key_trigger) tap_code(KC_SPC); // tap if enabled
+    }
 }
