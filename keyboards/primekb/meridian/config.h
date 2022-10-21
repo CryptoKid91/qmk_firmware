@@ -17,13 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-/* USB Device descriptor parameter */
-#define VENDOR_ID       0x5052
-#define PRODUCT_ID      0x004D
-#define DEVICE_VER      0x0001
-#define MANUFACTURER    Prime Keyboards
-#define PRODUCT         Meridian
-
 /* key matrix size */
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 14
@@ -36,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLED_NUM 3
 #define WS2812_SPI SPID2
 #define WS2812_SPI_MOSI_PAL_MODE 0
+#define WS2812_SPI_SCK_PAL_MODE 0
+#define WS2812_SPI_SCK_PIN B13
 
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE    5
