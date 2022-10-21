@@ -1,5 +1,7 @@
 #pragma once
 
+#define GRAVE_ESC_CTRL_OVERRIDE
+
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.
