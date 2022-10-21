@@ -1,5 +1,6 @@
 
 #include QMK_KEYBOARD_H
+//#include "dynamic_macro.h"
 
 // Custom keycodes for longer things
 #define MS_LW MT(MOD_RGUI, KC_LEFT)
@@ -9,8 +10,8 @@
 static uint32_t key_timer = 0;
 static bool key_trigger = false;
 
-// enable dynamic macro recording
-/*enum root_keycodes {
+/*// enable dynamic macro recording
+enum root_keycodes {
   FN_LAYR = SAFE_RANGE,
   DYNAMIC_MACRO_RANGE,
 };
@@ -25,20 +26,6 @@ enum custom_keycodes {
   NEWTAB = SAFE_RANGE,
   KEY_TMR
 };
-
-//#include "dynamic_macro.h"
-
-/*
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  uint16_t macro_kc = (keycode == MO(DYN) ? DYN_REC_STOP : keycode);
-
-  if (!process_record_dynamic_macro(macro_kc, record)) {
-      return false;
-  }
-
-  return true;
-}
-*/
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -70,9 +57,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐
  * │^  │F1 │F2 │F3 │F4 │F5 │F6 │F7 │F8 │F9 │F10│F11│F12│Del    │
  * ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤
- * │     │   │   │   │Rst│   │   │   │   │   │Prt│ScL│Pau│     │
+ * │     │DM1│DM2│   │Rst│   │   │   │   │   │Prt│ScL│Pau│     │
  * ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┐    │
- * │      │   │   │   │   │   │   │TO2│   │   │Ins│Del│NuL│    │
+ * │      │D1R│D2R│   │   │   │   │TO2│   │   │Ins│Del│NuL│    │
  * ├────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴┬───┤
  * │LSFT│TMR│   │   │MPl│MSt│MPv│MNx│Mut│Vo-│Vo+│   │RShift│   │
  * ├────┼───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴──┬┴──┬┴──┬───┼───┤
@@ -82,8 +69,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
   [FN1] = LAYOUT_60_iso_5x1u_split_rshift(
     KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_DEL,
-    _______, _______, _______, _______, RESET,   _______, _______, KC_PGDN, KC_UP,   KC_PGUP, KC_PSCR, KC_SLCK, KC_PAUS,
-    _______, _______, _______, _______, RGB_TOG, _______, KC_HOME, KC_LEFT, KC_DOWN, KC_RIGHT, KC_INS, KC_DEL,  KC_NLCK, _______,
+    _______, DM_PLY1, DM_PLY2, _______, RESET,   _______, _______, KC_PGDN, KC_UP,   KC_PGUP, KC_PSCR, KC_SLCK, KC_PAUS,
+    _______, DM_REC1, DM_REC2, _______, RGB_TOG, _______, KC_HOME, KC_LEFT, KC_DOWN, KC_RIGHT, KC_INS, KC_DEL,  KC_NLCK, _______,
     _______, KEY_TMR, _______, _______, KC_MPLY, KC_MSTP, KC_MPRV, KC_END,  KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_RSFT, _______,
     _______, _______, _______,                            NEWTAB,                    _______, KC_HOME, XXXXXXX, KC_PGUP, KC_A
   ),
@@ -139,6 +126,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  /*uint16_t macro_kc = (keycode == MO(FN1) ? DYN_REC_STOP : keycode);
+
+  if (!process_record_dynamic_macro(macro_kc, record)) {
+      return false;
+  }
+*/
   switch (keycode) {
   case NEWTAB:
     if(record->event.pressed) {
@@ -150,9 +143,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return false;
   case KEY_TMR:
-        if (record->event.pressed) {
-            key_trigger ^= true;
-        }
+    if (record->event.pressed) {
+        key_trigger ^= true;
+    }
     return false;
   default:
     return true;
@@ -160,7 +153,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 void matrix_scan_user(void) {
-    if (timer_elapsed32(key_timer) > 1500) { // 1.5 seconds
+    if (timer_elapsed32(key_timer) > 1345) { // 1.34 seconds
         key_timer = timer_read32();  // resets timer
         if (key_trigger) tap_code(KC_SPC); // tap if enabled
     }
