@@ -18,8 +18,8 @@
 
 // place overrides here
 #undef BACKLIGHT_BREATHING
-#define GRAVE_ESC_CTRL_OVERRIDE
-#define NO_ACTION_MACRO
-#define NO_ACTION_FUNCTION
-#define USB_POLLING_INTERVAL_MS 1
-#define QMK_KEYS_PER_SCAN 12
+#define GRAVE_ESC_CTRL_OVERRIDE // Grave Esc is esc if ctrl pressed
+#define NO_ACTION_MACRO // Disable legacy stuff
+#define NO_ACTION_FUNCTION // Disable legacy stuff
+#define USB_POLLING_INTERVAL_MS 1 // Faster pollig, because why not
+#define QMK_KEYS_PER_SCAN 12 // Moar keys per scan, theoretically faster
