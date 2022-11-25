@@ -18,8 +18,8 @@
 #   change to "no" to disable the options, or define them in the Makefile in
 #   the appropriate keymap folder that will get included automatically
 #
-BACKLIGHT_ENABLE = yes       # Enable keyboard backlight functionality
-KEY_LOCK_ENABLE = yes	       # Enable key lock functionality
-DYNAMIC_MACRO_ENABLE = yes   # Enable dynamic macros
+BACKLIGHT_ENABLE = yes      # Enable keyboard backlight functionality
+KEY_LOCK_ENABLE = yes	    # Enable key lock functionality
+DYNAMIC_MACRO_ENABLE = yes  # Enable dynamic macros
 DEBOUNCE_TYPE = sym_eager_pk     # Faster debounce algorithm
-EXTRAFLAGS += -flto
+EXTRAFLAGS += -flto			# Reduce firmware size
