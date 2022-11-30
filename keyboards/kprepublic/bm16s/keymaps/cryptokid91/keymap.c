@@ -14,13 +14,23 @@ enum custom_keycodes {
   KEY_TMR
 };
 
+// Tap Dance declarations
+enum {
+    TD_MUTE,
+};
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_MUTE] = ACTION_TAP_DANCE_DOUBLE(KC_F19, KC_F20),
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_NAV] = LAYOUT_ortho_4x4(
 		NEWTAB, MURO, KC_NO, OSL(_MENU),   \
 		KEY_TMR, KC_NO, KC_NO, KC_NO, \
-		KC_MPLY, KC_MPRV, KC_MNXT, KC_MSTP, \
-		G(KC_LEFT), G(KC_RIGHT), S(G(KC_LEFT)), S(G(KC_RIGHT)) \
+		KC_F18, KC_MPRV, KC_MNXT, KC_MPLY, \
+		TD(TD_MUTE),  KC_F21,  KC_F22,  KC_F23 \
 	),
 	[_MACRO] = LAYOUT_ortho_4x4(
 		RESET,   BL_STEP, _______, OSL(_MENU), \
@@ -98,6 +108,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case KEY_TMR:
     if (record->event.pressed) {
         key_trigger ^= true;
+        if (key_trigger) {
+            tap_code(KC_SPC);
+            key_timer = timer_read32();
+        }
     }
     return false;
   default:
