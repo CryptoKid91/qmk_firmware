@@ -1,14 +1,14 @@
 
 #include QMK_KEYBOARD_H
-//#include "dynamic_macro.h"
+// #include "dynamic_macro.h"
 
 // Custom keycodes for longer things
 #define MS_LW MT(MOD_RGUI, KC_LEFT)
 #define MS_RC MT(MOD_RCTL, KC_RIGHT)
 #define MS_US MT(MOD_RSFT, KC_UP)
 
-static uint32_t key_timer = 0;
-static bool key_trigger = false;
+static uint32_t key_timer   = 0;
+static bool     key_trigger = false;
 
 /*// enable dynamic macro recording
 enum root_keycodes {
@@ -18,17 +18,14 @@ enum root_keycodes {
 */
 
 enum {
-  DEF = 0,
-  FN1,
+    DEF = 0,
+    FN1,
 };
 
-enum custom_keycodes {
-  NEWTAB = SAFE_RANGE,
-  KEY_TMR
-};
+enum custom_keycodes { NEWTAB = SAFE_RANGE, KEY_TMR };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
+    // clang-format off
 /* LAYOUT_60_iso_5x1u_split_rshift
  *
  * DEF
@@ -123,38 +120,39 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______,                            _______,                   _______, MacRec1, XXXXXXX, MacPla1, MacPla2
    ),
 */
+    // clang-format on
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  /*uint16_t macro_kc = (keycode == MO(FN1) ? DYN_REC_STOP : keycode);
+    /*uint16_t macro_kc = (keycode == MO(FN1) ? DYN_REC_STOP : keycode);
 
-  if (!process_record_dynamic_macro(macro_kc, record)) {
-      return false;
-  }
-*/
-  switch (keycode) {
-  case NEWTAB:
-    if(record->event.pressed) {
-      SEND_STRING(SS_LCTRL("c") SS_LCTRL("t"));
-      wait_ms(500);
-      SEND_STRING(SS_LCTRL("v"));
-      wait_ms(100);
-      SEND_STRING(SS_TAP(X_ENTER));
+    if (!process_record_dynamic_macro(macro_kc, record)) {
+        return false;
     }
-    return false;
-  case KEY_TMR:
-    if (record->event.pressed) {
-        key_trigger ^= true;
+  */
+    switch (keycode) {
+        case NEWTAB:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTRL("c") SS_LCTRL("t"));
+                wait_ms(500);
+                SEND_STRING(SS_LCTRL("v"));
+                wait_ms(100);
+                SEND_STRING(SS_TAP(X_ENTER));
+            }
+            return false;
+        case KEY_TMR:
+            if (record->event.pressed) {
+                key_trigger ^= true;
+            }
+            return false;
+        default:
+            return true;
     }
-    return false;
-  default:
-    return true;
-  }
 };
 
 void matrix_scan_user(void) {
     if (timer_elapsed32(key_timer) > 1345) { // 1.34 seconds
-        key_timer = timer_read32();  // resets timer
-        if (key_trigger) tap_code(KC_SPC); // tap if enabled
+        key_timer = timer_read32();          // resets timer
+        if (key_trigger) tap_code(KC_SPC);   // tap if enabled
     }
 }
