@@ -15,4 +15,4 @@ AUTO_SHIFT_ENABLE = no  # If the time depressed is greater than or equal to the 
 TAP_DANCE_ENABLE = no
 KEY_LOCK_ENABLE = yes	       # Enable key lock functionality
 DYNAMIC_MACRO_ENABLE = yes   # Enable dynamic macros
-DEBOUNCE_TYPE = sym_eager_pk     # Faster debounce algorithm
+DEBOUNCE_TYPE = asym_eager_defer_pk     # Faster debounce algorithm
