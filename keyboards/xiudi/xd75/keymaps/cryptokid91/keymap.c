@@ -22,25 +22,12 @@
 #define MS_US MT(MOD_RSFT, KC_UP)
 
 // Layer shorthand
-enum layer_names {
-    _QWERTY,
-    _FN,
-    _LOWER,
-    _RAISE,
-    _RESET
-};
+enum layer_names { _QWERTY, _FN, _LOWER, _RAISE, _RESET };
 
-enum custom_keycodes {
-  MS_P00 = SAFE_RANGE,
-  NEWTAB,
-  ROLL,
-  IOTECH,
-	TERM
-};
-
+enum custom_keycodes { MS_P00 = SAFE_RANGE, NEWTAB, ROLL, IOTECH, TERM };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
+    // clang-format off
 /* SPLIT QWERTY
  * .--------------------------------------------------------------------------------------------------------------------------------------.
  * | ESC    | 1      | 2      | 3      | 4      | 5      | PRTSCR | SLCK   | LOCK   | 6      | 7      | 8      | 9      | 0      | `      |
@@ -150,59 +137,55 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
  )
-
+    // clang-format on
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-  case MS_P00:
-    if (record->event.pressed) {
-      SEND_STRING("00");
+    switch (keycode) {
+        case MS_P00:
+            if (record->event.pressed) {
+                SEND_STRING("00");
+            }
+            return false;
+        case NEWTAB:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTRL("c") SS_LCTRL("t"));
+                wait_ms(200);
+                SEND_STRING(SS_LCTRL("v"));
+                wait_ms(100);
+                SEND_STRING(SS_TAP(X_ENTER));
+            }
+            return false;
+        case ROLL:
+            if (record->event.pressed) {
+                SEND_STRING("!roll 1d100\n");
+            }
+            return false;
+        case IOTECH:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LCTRL("t"));
+                wait_ms(100);
+                SEND_STRING("www.io/tech.fi");
+                wait_ms(100);
+                SEND_STRING(SS_TAP(X_ENTER));
+                wait_ms(100);
+                SEND_STRING(SS_TAP(X_ENTER));
+            }
+            return false;
+        case TERM:
+            if (record->event.pressed) {
+                SEND_STRING(SS_LGUI("r"));
+                wait_ms(300);
+                SEND_STRING("powershell");
+                wait_ms(100);
+                SEND_STRING(SS_TAP(X_ENTER));
+            }
+            return false;
+        default:
+            return true;
     }
-    return false;
-  case NEWTAB:
-    if(record->event.pressed) {
-      SEND_STRING(SS_LCTRL("c") SS_LCTRL("t"));
-      wait_ms(200);
-      SEND_STRING(SS_LCTRL("v"));
-      wait_ms(100);
-      SEND_STRING(SS_TAP(X_ENTER));
-    }
-    return false;
-  case ROLL:
-    if(record->event.pressed) {
-      SEND_STRING("!roll 1d100\n");
-    }
-    return false;
-  case IOTECH:
-    if(record->event.pressed) {
-      SEND_STRING(SS_LCTRL("t"));
-      wait_ms(100);
-      SEND_STRING("www.io/tech.fi");
-<<<<<<< HEAD
-      _delay_ms(100);
-      SEND_STRING(SS_TAP(X_ENTER));
-=======
-      wait_ms(100);
-      tap_code(KC_ENT);
->>>>>>> 8a4700732e (Update keyboards/xd75/keymaps/cryptokid91/keymap.c)
-    }
-    return false;
-  case TERM:
-    if(record->event.pressed) {
-      SEND_STRING(SS_LGUI("r"));
-      wait_ms(300);
-      SEND_STRING("powershell");
-      wait_ms(100);
-      SEND_STRING(SS_TAP(X_ENTER));
-    }
-    return false;
-  default:
-    return true;
-  }
 };
 
-
 layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _RESET);
+    return update_tri_layer_state(state, _LOWER, _RAISE, _RESET);
 }
