@@ -22,4 +22,4 @@
 #define NO_ACTION_MACRO // Disable legacy stuff
 #define NO_ACTION_FUNCTION // Disable legacy stuff
 #define USB_POLLING_INTERVAL_MS 1 // Faster pollig, because why not
-#define QMK_KEYS_PER_SCAN 12 // Moar keys per scan, theoretically faster
+//#define QMK_KEYS_PER_SCAN 12 // Moar keys per scan, theoretically faster
